@@ -6,17 +6,16 @@ const filepath = path.join(__dirname, "..", "data","feedbacks.json");
 const getFeedbacks = async () => {
     try{
         const feedbacks = await fs.readFile(filepath,"utf8");
-        return JSON.parse(feedbacks);
+        return feedbacks ? JSON.parse(feedbacks) : [];
     }
     catch (error) {
         console.error(`Error reading file: ${error}`);
-        return [];
     }
 };
-const addFeedback = async (feedback) => {
+const addFeedback = async (feedbackTxt) => {
     const feedbackObj = {
         id: uuidv4(),
-        feedback: feedback,
+        feedback: feedbackTxt,
         likes: 0
     }
     try{
@@ -30,7 +29,7 @@ const addFeedback = async (feedback) => {
     }
 };
 const likeFeedback = () => {
-
+    
 };
 
 module.exports = {
