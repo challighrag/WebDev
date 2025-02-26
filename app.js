@@ -31,6 +31,7 @@ app.route('/add-feedback')
         const { feedback } = req.body;
         try{
             await addFeedback(feedback);
+            console.log(feedback);
             res.status(200).json({message: "Feedback created successfully"});
         }
         catch (error){
@@ -38,6 +39,8 @@ app.route('/add-feedback')
             res.status(500).json({msg: "Error writing a new feedback"});
         }
     }));
+
+//Server listening to PORT:3000 or 8080
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
