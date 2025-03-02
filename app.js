@@ -7,38 +7,30 @@ const path = require("path");
 
 //My Files
 const {PORT} = require("./config/config");
-const {addFeedback} = require("./models/feedbackModel");
 const loggerMiddleware = require("./middlewares/logger");
+const feedbackController = require("./controllers/feedbackController");
+const pageNotFound = require("./controllers/errorControllers");
+const getHomePage = require("./controllers/homeController");
 
 
 const app = express();
 
+app.use(loggerMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(favicon(path.join(__dirname, "public", "icons","favicon.ico")));
-app.use(loggerMiddleware);
+
 app.set("view engine", "ejs")
 
 //Requests
-app.get('/feedbacks', (req, res) =>{
-    res.render("feedbacks");
-});
+app.get("/", getHomePage);
+app.get('/feedbacks', feedbackController.getFeedbacks)
 app.route('/add-feedback')
-    .get((req, res) =>{
-        res.render("add-feedback");
-    })
-    .post((async (req, res) =>{
-        const { feedback } = req.body;
-        try{
-            await addFeedback(feedback);
-            console.log(feedback);
-            res.status(200).json({message: "Feedback created successfully"});
-        }
-        catch (error){
-            console.error(`Error writing a new feedback: ${error}`);
-            res.status(500).json({msg: "Error writing a new feedback"});
-        }
-    }));
+    .get(feedbackController.getAddFeedback)
+    .post(feedbackController.postAddFeedback)
+
+app.put("/feedbacks/:id", feedbackController.putLikeFeedbacks);
+app.use(pageNotFound.pageNotFound);
 
 //Server listening to PORT:3000 or 8080
 app.listen(PORT, () => {

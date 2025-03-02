@@ -6,7 +6,31 @@
     <title>Feedbacks</title>
 </head>
 <body>
-    <%- include("./includes/header")%>
     <h1>Feedbacks</h1>
+    <%- include("./includes/header")%>
+    <ul id="ul">
+        <% feedbacks.forEach((feedback) => { %>
+            <li class="ul__li">
+                <%= feedback.feedback %>
+                <%= feedback.likes %>
+                <form class="li__form">
+                    <input type="hidden" class="idField" value="<%= feedback.id %>">
+                    <button type="submit">❤️</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const ul = document.getElementById("ul");
+        ul.querySelectorAll(".ul__li").forEach((li) => {
+            const form = li.querySelector(".li__form");
+            const id = form.querySelector('.idField').value;
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const response = await axios.put(`/feedbacks/${id}`);
+            })
+        });
+    </script>
 </body>
 </html>

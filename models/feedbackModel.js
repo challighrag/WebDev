@@ -14,8 +14,10 @@ const getFeedbacks = async () => {
     }
     catch (error) {
         console.error(`Error reading file: ${error}`);
+        return [];
     }
 };
+
 const addFeedback = async (feedbackTxt) => {
     const feedbackObj = {
         id: uuidv4(),
@@ -29,11 +31,13 @@ const addFeedback = async (feedbackTxt) => {
     }
     catch (error) {
         console.error(`Error writing file: ${error}`);
-        return [];
     }
 };
-const likeFeedback = () => {
-    
+const likeFeedback = async (id) => {
+    const feedbacks = await getFeedbacks();
+    const feedback = feedbacks.find((feedback) => feedback.id === id);
+    feedback.likes++;
+    await fs.writeFile(filepath,JSON.stringify(feedbacks),'utf8');
 };
 
 module.exports = {
